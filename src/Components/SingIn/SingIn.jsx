@@ -4,19 +4,22 @@ import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icon
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import "./SingIn.scss"
+import {auth}  from '../../firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 
 
-const userRegex = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+const emailRegex = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
 const pwdRegex = /^(?=.*[0-9])(?=.*[A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%]).{8,24}$/
 
 const SingIn = () => {
-    const userRef = useRef();
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
     const errRef = useRef();
 
     //hook del usuario
-    const [user,setUser] = useState("");
-    const [validUser, setValidUser] = useState(false);
-    const [userFocus, setUserFocus] = useState(false);
+    const [email,setEmail] = useState("");
+    const [validEmail, setValidEmail] = useState(false);
+    const [emailFocus, setEmailFocus] = useState(false);
 
     //hook del Password
     const [pass,setPass] = useState("");
@@ -29,15 +32,15 @@ const SingIn = () => {
 
     //
     useEffect(() => {
-        userRef.current.focus();
+        emailRef.current.focus();
     },[])
 
     // useEffect validar si el usuario esta bien 
     useEffect(() => {
-        const result = userRegex.test(user);
+        const result = emailRegex.test(email);
         console.log(result);
-        setValidUser(result)
-    },[user])
+        setValidEmail(result)
+    },[email])
 
     //useEffect validar si la contraseña es valida
     useEffect(() => {
@@ -49,24 +52,43 @@ const SingIn = () => {
     //useEffect para el mensaje de error
     useEffect(() =>{
         setErrMsg("");
-    },[user,pass])
+    },[email,pass])
 
     //funcion para enviar la informacion del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
         // verificar datos
-        const v1 = userRegex.test(user);
+        const v1 = emailRegex.test(email);
         const v2 = pwdRegex.test(pass);
         if (!v1 || !v2){
             setErrMsg("Invalid Entry");
             return
         }
-        console.log(user,pass)
+        signInWithEmailAndPassword(auth,email,pass)
+        .then((userCredential) => {
+            console.log(userCredential)
+        }). catch((error) =>{
+            console.log(error)
+        })
+
+        
+        console.log(email,pass)
         setSuccess(true)
     }
 
     const register =  (e) =>{
         e.preventDefault()
+
+        auth.createUserWithEmailPassword(
+            emailRef.current.value,
+            passwordRef.current.value
+        )
+        . then((authUser ) => {
+            console.log(authUser)
+        })
+        .catch((error) => {
+            alert(error.message)
+         })
     } 
 
 
@@ -85,12 +107,12 @@ const SingIn = () => {
           <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
           <h1 className='tittleForm tittleSignIn'> Sign In </h1>
           <form className='form' onSubmit={handleSubmit} >
-              <label className='tittleForm' htmlFor='usermane'>
-                  Username:
-                  <span className={validUser ? "valid" : "hide"}>
+              <label className='tittleForm' htmlFor='email'>
+                  Email:
+                  <span className={validEmail ? "valid" : "hide"}>
                       <FontAwesomeIcon icon={faCheck}/>
                   </span>
-                  <span className={validUser || !user ? "hide" : "invalid"}>
+                  <span className={validEmail || !email ? "hide" : "invalid"}>
                       <FontAwesomeIcon icon={faTimes}/>
                   </span>
               </label>
@@ -98,17 +120,17 @@ const SingIn = () => {
                   className='user'
                   type="email"
                   id="username"
-                  ref={userRef}
+                  ref={emailRef}
                   autoComplete="off"
                   placeholder='Email'
-                  onChange={(e) => setUser(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
-                  aria-invalid={validUser ? "false" : "true"}
+                  aria-invalid={validEmail ? "false" : "true"}
                   aria-describedby="uidnote"
-                  onFocus={() => setUserFocus(true)}
-                  onBlur={() => setUserFocus(false)}
+                  onFocus={() => setEmailFocus(true)}
+                  onBlur={() => setEmailFocus(false)}
               />
-              <p id='uidnote' className= {userFocus && user && !validUser ? "instructions" : "offscreen"}>
+              <p id='uidnote' className= {emailFocus && email && !validEmail ? "instructions" : "offscreen"}>
                   <FontAwesomeIcon icon={faInfoCircle}/>
                   Must begin with a letter. <br />
                   Letters, numbers, underscores, hyphens allowed.
@@ -127,6 +149,7 @@ const SingIn = () => {
                   type="password"
                   id="password"
                   placeholder='Password'
+                  ref={passwordRef}
                   onChange={(e) => setPass(e.target.value)}
                   required
                   aria-invalid={validPass ? "false" : "true"}
@@ -142,7 +165,7 @@ const SingIn = () => {
                   <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span>
                   <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
               </p>
-              <button className='submit' disabled={!validUser || !validPass ? true : false}> Sing In </button>
+              <button className='submit' disabled={!validEmail || !validPass ? true : false}> Sing In </button>
           </form>
           <p> 
               Already registered ?<br/>
