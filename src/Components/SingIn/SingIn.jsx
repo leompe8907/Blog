@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import "./SingIn.scss"
 
 
-const userRegex = /^[a-zA-Z][a-zA-Z0-9-_]{5,23}$/;
+const userRegex = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
 const pwdRegex = /^(?=.*[0-9])(?=.*[A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%]).{8,24}$/
 
 const SingIn = () => {
@@ -65,6 +65,10 @@ const SingIn = () => {
         setSuccess(true)
     }
 
+    const register =  (e) =>{
+        e.preventDefault()
+    } 
+
 
   return (
     <>
@@ -79,9 +83,9 @@ const SingIn = () => {
     <div className="general">
       <section className="sectionGeneral">
           <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-          <h1> Sign In </h1>
-          <form onSubmit={handleSubmit} >
-              <label htmlFor='usermane'>
+          <h1 className='tittleForm tittleSignIn'> Sign In </h1>
+          <form className='form' onSubmit={handleSubmit} >
+              <label className='tittleForm' htmlFor='usermane'>
                   Username:
                   <span className={validUser ? "valid" : "hide"}>
                       <FontAwesomeIcon icon={faCheck}/>
@@ -90,12 +94,13 @@ const SingIn = () => {
                       <FontAwesomeIcon icon={faTimes}/>
                   </span>
               </label>
-              <input 
-                  type="text"
+              <input
+                  className='user'
+                  type="email"
                   id="username"
                   ref={userRef}
                   autoComplete="off"
-                  placeholder='Username'
+                  placeholder='Email'
                   onChange={(e) => setUser(e.target.value)}
                   required
                   aria-invalid={validUser ? "false" : "true"}
@@ -105,11 +110,10 @@ const SingIn = () => {
               />
               <p id='uidnote' className= {userFocus && user && !validUser ? "instructions" : "offscreen"}>
                   <FontAwesomeIcon icon={faInfoCircle}/>
-                  6 to 24 charcters. <br />
                   Must begin with a letter. <br />
                   Letters, numbers, underscores, hyphens allowed.
               </p>
-              <label htmlFor='password'>
+              <label className='tittleForm' htmlFor='password'>
                   password:
                   <span className={validPass ? "valid" : "hide"}>
                       <FontAwesomeIcon icon={faCheck}/>
@@ -118,7 +122,8 @@ const SingIn = () => {
                       <FontAwesomeIcon icon={faTimes}/>
                   </span>
               </label>
-              <input 
+              <input
+                  className='password'
                   type="password"
                   id="password"
                   placeholder='Password'
@@ -137,12 +142,12 @@ const SingIn = () => {
                   <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span>
                   <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
               </p>
-              <button disabled={!validUser || !validPass ? true : false}> Sing Up </button>
+              <button className='submit' disabled={!validUser || !validPass ? true : false}> Sing In </button>
           </form>
           <p> 
               Already registered ?<br/>
               <span>
-                  <a href='../SingIn/SingIn.jsx'> Sign In </a>
+                  <a className='link' onClick={register}> Sign up </a>
               </span>        
           </p>
       </section>

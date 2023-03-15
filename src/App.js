@@ -6,13 +6,20 @@ import SingIn from "./Components/SingIn/SingIn";
 import "./App.scss"
 
 function App() {
+
+  const user = null
+
   return (
     <main className="App">
       <Router>
+      {!user ? (
+        <SingIn/>
+      ):(
         <Routes>
           <Route path="/" element={<SingIn/>}/>
-          <Route path="/Registro" element={<Registro/>}/>
+          
         </Routes>
+      )}
       </Router>
     </main>
   );
