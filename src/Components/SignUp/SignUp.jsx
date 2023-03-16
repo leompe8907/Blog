@@ -1,21 +1,19 @@
-import React from 'react'
 import { useRef,useEffect,useState } from 'react'
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { useAuth } from '../../Context/UserContext';
 
-import "./SingIn.scss"
-
+import "./SignUp.scss"
 
 
 const emailRegex = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
 const pwdRegex = /^(?=.*[0-9])(?=.*[A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%]).{8,24}$/
 
-const SignIn = () => {
+const SignUp = () => {
+
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
-    const errRef = useRef();
     const auth =useAuth()
 
     //hook del usuario
@@ -28,55 +26,31 @@ const SignIn = () => {
     const [validPass, setValidPass] = useState(false);
     const [passFocus, setPassFocus] = useState(false);
 
-    //hook de error
-    const [errMsg,setErrMsg] = useState("");
-    const [success, setSuccess] = useState(false);
-
-    //
-    useEffect(() => {
-        emailRef.current.focus();
-    },[])
-
     // useEffect validar si el usuario esta bien
     useEffect(() => {
-        const result = emailRegex.test(email);
-        console.log(result);
-        setValidEmail(result)
+    const result = emailRegex.test(email);
+    console.log(result);
+    setValidEmail(result)
     },[email])
 
     //useEffect validar si la contraseña es valida
     useEffect(() => {
-        const result = pwdRegex.test(pass);
-        console.log(result);
-        setValidPass(result);
+    const result = pwdRegex.test(pass);
+    console.log(result);
+    setValidPass(result);
     },[pass])
 
-    //useEffect para el mensaje de error
-    useEffect(() =>{
-        setErrMsg("");
-    },[email,pass])
-
     //funcion para enviar la informacion del formulario
-    const handleSubmit = async (e) => {
+    const SignUp = async (e) => {
         e.preventDefault();
-        auth.signin(email,pass)
+        auth.signup(email,pass)
     }
 
   return (
-    <>
-    {success ? (
-        <section>
-            <h1>Success!</h1>
-            <p>
-                <a href='#'> Sign In</a>
-            </p>
-        </section>
-    ) : (
-    <div className="general">
+<div className="general">
       <section className="sectionGeneral">
-          <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-          <h1 className='tittleForm tittleSignIn'> Sign In </h1>
-          <form className='form' onSubmit={handleSubmit} >
+          <h1 className='tittleForm tittleSignIn'> Create Account </h1>
+          <form className='form' onSubmit={SignUp} >
               <label className='tittleForm' htmlFor='email'>
                   Email:
                   <span className={validEmail ? "valid" : "hide"}>
@@ -137,17 +111,9 @@ const SignIn = () => {
               </p>
               <button className='submit' disabled={!validEmail || !validPass ? true : false}> Sing In </button>
           </form>
-          <p> 
-              Already registered ?<br/>
-              <span>
-                  <a className='link'> Sign up </a>
-              </span>        
-          </p>
       </section>
     </div>
-    )}
-    </>
   )
 }
 
-export default SignIn
+export default SignUp

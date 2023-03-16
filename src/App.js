@@ -1,27 +1,21 @@
 import { BrowserRouter as Router,Routes,Route  } from "react-router-dom";
 
-import Registro from "./Components/Resgistro/Registro";
-import SingIn from "./Components/SingIn/SingIn";
+import { AuthProvider } from "./Context/UserContext";
+import SignIn from "./Components/SingIn/SingIn";
+
 
 import "./App.scss"
+import SignUp from "./Components/SignUp/SignUp";
 
 function App() {
 
-  const user = null
 
   return (
-    <main className="App">
-      <Router>
-      {!user ? (
-        <SingIn/>
-      ):(
-        <Routes>
-          <Route path="/" element={<SingIn/>}/>
-          
-        </Routes>
-      )}
-      </Router>
-    </main>
+    <AuthProvider>
+      <div className="App">
+        <SignIn/>
+      </div>
+    </AuthProvider>
   );
 }
 
