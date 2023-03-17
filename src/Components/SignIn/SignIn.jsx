@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAuth } from '../../Context/UserContext';
 
 import "./SingIn.scss"
+import { Navigate } from 'react-router-dom';
 
 
 
@@ -140,7 +141,6 @@ const SignIn = () => {
           <p> 
               Already registered ?<br/>
               <span>
-                  <a className='link'> Sign up </a>
               </span>        
           </p>
       </section>
