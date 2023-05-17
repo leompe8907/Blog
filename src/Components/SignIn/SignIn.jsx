@@ -2,11 +2,10 @@ import React from 'react'
 import { useRef,useEffect,useState } from 'react'
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import "./SingIn.scss"
 import { useAuth } from '../../Context/UserContext';
 
-import "./SingIn.scss"
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
 
 
@@ -60,8 +59,20 @@ const SignIn = () => {
     //funcion para enviar la informacion del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
-        auth.signin(email,pass)
-    }
+        try {
+          await auth.signin(email, pass);
+          setSuccess(true); // Iniciar sesión exitosa
+          Navigate("/blog")
+        } catch (error) {
+          if (error.code === "auth/user-not-found") {
+            setErrMsg("El usuario no existe. ");
+          } else if (error.code === "auth/wrong-password") {
+            setErrMsg("Credenciales incorrectas. ");
+          } else {
+            setErrMsg("Error al iniciar sesión. ");
+          }
+        }
+      };
 
   return (
     <>
